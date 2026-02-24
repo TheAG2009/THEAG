@@ -3,50 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sunny Cafe & Resort - Home</title>
+    <title>AG's CAFE - Home</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <nav>
-        <div class="logo">🌴 Sunny Cafe & Resort</div>
-        <ul>
+        <div class="logo">☕ AG's CAFE</div>
+        <ul id="nav-links">
             <li><a href="index.html">Home</a></li>
             <li><a href="menu.html">Menu</a></li>
-            <li><a href="login.html">Login</a></li>
+            <li><a href="login.html" id="login-link">Login</a></li>
             <li><a href="cart.html">Cart (<span id="cart-count">0</span>)</a></li>
         </ul>
+        <div id="user-greeting" class="user-greeting" style="display: none;"></div>
     </nav>
 
     <header class="hero">
-        <h1>Welcome to Paradise</h1>
-        <p>Relax, indulge, and enjoy every moment.</p>
+        <h1>Welcome to AG's CAFE</h1>
+        <p>Pure vegetarian delights brewed with love.</p>
         <a href="menu.html" class="btn">View Menu</a>
-        <a href="login.html" class="btn btn-outline">Member Login</a>
+        <a href="login.html" id="hero-login" class="btn btn-outline">Login to Order</a>
+        <a href="menu.html" id="hero-order" class="btn btn-primary" style="display: none;">Order Now</a>
     </header>
 
     <section class="features">
-        <h2>Why Choose Us?</h2>
+        <h2>Our Specialities</h2>
         <div class="feature-grid">
             <div class="feature">
-                <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400" alt="Resort">
-                <h3>Luxury Rooms</h3>
-                <p>Comfortable stays with ocean views.</p>
+                <img src="https://images.unsplash.com/photo-1567954970774-58d6aa6c50dc?w=400" alt="Coffee">
+                <h3>Fresh Brewed Coffee</h3>
+                <p>Start your day with our signature filter coffee.</p>
             </div>
             <div class="feature">
-                <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400" alt="Restaurant">
-                <h3>Gourmet Dining</h3>
-                <p>Exquisite dishes crafted by top chefs.</p>
+                <img src="https://images.unsplash.com/photo-1600335895229-6a755a6a4d8a?w=400" alt="Snacks">
+                <h3>Delicious Snacks</h3>
+                <p>Samosa, vada pav, and more – all veg.</p>
             </div>
             <div class="feature">
-                <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=400" alt="Spa">
-                <h3>Relaxation Spa</h3>
-                <p>Rejuvenate your mind and body.</p>
+                <img src="https://images.unsplash.com/photo-1551024601-b2cdcf03b928?w=400" alt="Desserts">
+                <h3>Heavenly Desserts</h3>
+                <p>Gulab jamun, jalebi, and ice creams.</p>
             </div>
         </div>
     </section>
 
     <footer>
-        <p>&copy; 2025 Sunny Cafe & Resort. All rights reserved.</p>
+        <p>&copy; 2025 AG's CAFE. All rights reserved.</p>
     </footer>
 
     <script src="js/main.js"></script>
