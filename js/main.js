@@ -11,7 +11,7 @@ function updateCartCount() {
     }
 }
 
-// ========== Menu Items Data (50+ Items with Working Images) ==========
+// ========== Menu Items Data (50+ Items) ==========
 const menuItems = [
     // Dosa Varieties
     { id: 1, name: 'Masala Dosa', description: 'Crispy dosa with potato filling', price: 70, image: 'https://images.unsplash.com/photo-1589301760015-d2a2edb43ee0?w=400' },
@@ -106,14 +106,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 menuContainer.appendChild(itemDiv);
             });
 
-            // Add to cart buttons
+            // Add to cart buttons - WITH LOGIN POPUP CHECK
             document.querySelectorAll('.add-to-cart').forEach(btn => {
                 btn.addEventListener('click', function(e) {
                     const id = parseInt(e.target.dataset.id);
                     const item = menuItems.find(i => i.id === id);
-                    addToCart(item);
-                    e.target.textContent = '✓ Added';
-                    setTimeout(() => e.target.textContent = 'Add to Cart', 1000);
+                    
+                    // Check if user is logged in
+                    const user = localStorage.getItem('loggedInUser');
+                    
+                    if (!user) {
+                        // Show login popup
+                        showLoginPopup(item);
+                    } else {
+                        // User logged in, add to cart directly
+                        addToCart(item);
+                        e.target.textContent = '✓ Added';
+                        setTimeout(() => e.target.textContent = 'Add to Cart', 1000);
+                    }
                 });
             });
         }
@@ -128,6 +138,70 @@ document.addEventListener('DOMContentLoaded', function() {
         displayCartItems();
     }
 });
+
+// ========== Login Popup Function ==========
+function showLoginPopup(item) {
+    // Check if popup already exists
+    let popup = document.getElementById('login-popup');
+    
+    if (!popup) {
+        // Create popup
+        popup = document.createElement('div');
+        popup.id = 'login-popup';
+        popup.className = 'login-popup';
+        popup.innerHTML = `
+            <div class="popup-content">
+                <div class="popup-header">
+                    <h3>Login Required</h3>
+                    <button class="close-popup">&times;</button>
+                </div>
+                <div class="popup-body">
+                    <p>Please login to add items to cart and order.</p>
+                    <div class="popup-buttons">
+                        <button class="btn popup-login">Login Now</button>
+                        <button class="btn popup-cancel">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(popup);
+        
+        // Add event listeners
+        const closeBtn = popup.querySelector('.close-popup');
+        const cancelBtn = popup.querySelector('.popup-cancel');
+        const loginBtn = popup.querySelector('.popup-login');
+        
+        closeBtn.addEventListener('click', () => {
+            popup.remove();
+        });
+        
+        cancelBtn.addEventListener('click', () => {
+            popup.remove();
+        });
+        
+        loginBtn.addEventListener('click', () => {
+            // Store the item in session storage to add after login
+            sessionStorage.setItem('pendingItem', JSON.stringify(item));
+            window.location.href = 'login.html';
+        });
+    }
+    
+    // Show popup
+    popup.style.display = 'flex';
+}
+
+// ========== Check for pending item after login ==========
+function checkPendingItem() {
+    const pendingItem = sessionStorage.getItem('pendingItem');
+    if (pendingItem) {
+        const item = JSON.parse(pendingItem);
+        addToCart(item);
+        sessionStorage.removeItem('pendingItem');
+        
+        // Show success message
+        alert(`${item.name} added to cart!`);
+    }
+}
 
 // ========== Cart Functions ==========
 function addToCart(item) {
@@ -224,6 +298,15 @@ if (document.getElementById('checkout-btn')) {
             alert('Your cart is empty!');
             return;
         }
+        
+        // Check if user is logged in before checkout
+        const user = localStorage.getItem('loggedInUser');
+        if (!user) {
+            alert('Please login to checkout!');
+            window.location.href = 'login.html';
+            return;
+        }
+        
         paymentSection.style.display = 'block';
         checkoutBtn.style.display = 'none';
     });
@@ -278,8 +361,15 @@ if (document.getElementById('login-form')) {
             const name = email.split('@')[0];
             localStorage.setItem('loggedInUser', name);
             document.getElementById('login-message').textContent = 'Login successful! Redirecting...';
+            
+            // Check if there's a pending item
             setTimeout(() => {
-                window.location.href = 'index.html';
+                const pendingItem = sessionStorage.getItem('pendingItem');
+                if (pendingItem) {
+                    window.location.href = 'menu.html';
+                } else {
+                    window.location.href = 'index.html';
+                }
             }, 1000);
         } else {
             alert('Please enter email and password.');
@@ -292,8 +382,6 @@ function updateUIForLogin() {
     const user = localStorage.getItem('loggedInUser');
     const loginLink = document.getElementById('login-link');
     const userGreeting = document.getElementById('user-greeting');
-    const heroLogin = document.getElementById('hero-login');
-    const heroOrder = document.getElementById('hero-order');
 
     if (user) {
         if (loginLink) loginLink.style.display = 'none';
@@ -301,14 +389,15 @@ function updateUIForLogin() {
             userGreeting.style.display = 'block';
             userGreeting.textContent = `Welcome, ${user}!`;
         }
-        if (heroLogin) heroLogin.style.display = 'none';
-        if (heroOrder) heroOrder.style.display = 'inline-block';
     } else {
         if (loginLink) loginLink.style.display = 'inline';
         if (userGreeting) userGreeting.style.display = 'none';
-        if (heroLogin) heroLogin.style.display = 'inline-block';
-        if (heroOrder) heroOrder.style.display = 'none';
     }
+}
+
+// ========== Check for pending item on menu page load ==========
+if (document.querySelector('.menu-page')) {
+    checkPendingItem();
 }
 
 // ========== Initialise ==========
